@@ -5,11 +5,12 @@ import { string, object } from 'yup';
 import useSignIn from "../hooks/useSignIn";
 import useAuthStorage from "../hooks/useAuthStorage";
 import { useNavigate } from "react-router-native";
+import React from "react";
 
-const SignIn = () => {
+const SignIn = ({ submitFunction }) => {
   const authStorage = useAuthStorage()
   const [signIn] = useSignIn()
-  const navigate = useNavigate()
+  const navigate = submitFunction ? null : useNavigate()
 
   const validationSchema = object({
     username: string().required(),
@@ -28,7 +29,7 @@ const SignIn = () => {
   }
   return (
     <View>
-      <Formik initialValues={{ username: '', password: '' }} onSubmit={values => submitForm(values)} validationSchema={validationSchema}>
+      <Formik initialValues={{ username: '', password: '' }} onSubmit={submitFunction ? values => submitFunction(values) : values => submitForm(values)} validationSchema={validationSchema}>
         {({ handleSubmit }) => <SignInForm onsubmit={handleSubmit} />}
       </Formik>
     </View>);
